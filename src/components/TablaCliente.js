@@ -1,17 +1,17 @@
-// components/TablaProductos.js
+
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView,TouchableOpacity } from 'react-native';
 import BotonEliminarCliente from './BotonEliminarCliente';
 
 
-const TablaClientes = ({ clientes, eliminarCliente }) => {
+const TablaClientes = ({ clientes, eliminarCliente, editarCliente }) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.titulo}>Tabla de Clientes</Text>
+            <Text style={styles.titulo}>Tabla de clientes</Text>
             {/* Encabezado de la tabla */}
             <View style={[styles.fila, styles.encabezado]}>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Nombre</Text>
-                <Text style={[styles.celda, styles.textoEncabezado]}>Apellido</Text> 
+                <Text style={[styles.celda, styles.textoEncabezado]}>Apellido</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Edad</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Telefono</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Cedula</Text>
@@ -26,9 +26,15 @@ const TablaClientes = ({ clientes, eliminarCliente }) => {
                         <Text style={styles.celda}>{item.edad}</Text>
                         <Text style={styles.celda}>{item.telefono}</Text>
                         <Text style={styles.celda}>{item.cedula}</Text>
-                        <View style={styles.celdaAcciones}> 
-                            <BotonEliminarCliente 
-                                id={item.id}  // ← CLAVE: Cambia de item={item.id} a id={item.id}
+                        <View style={styles.celdaAcciones}>
+                            <TouchableOpacity
+                                style={styles.botonActualizar}
+                                onPress={() => editarCliente(item)}
+                            >
+                                <Text>✏️</Text>
+                            </TouchableOpacity>
+                            <BotonEliminarCliente
+                                id={item.id}
                                 eliminarCliente={eliminarCliente}
                             />
                         </View>

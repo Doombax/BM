@@ -1,66 +1,42 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, TextInput, Button, StyleSheet, Text } from "react-native";
-import { db } from "../database/firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
 
-const FormularioProductos = ({ cargarDatos }) => {
-    const [nombre, setNombre] = useState("");
-    const [precio, setPrecio] = useState("");
-    const [descripcion, setDescripcion] = useState("");
-    const [stock, setStock] = useState("");
-
-
-    const guardarProducto = async () => {
-        if (nombre && descripcion && stock && precio ) {
-            try {
-                await addDoc(collection(db, "productos"), {
-                    nombre: nombre,
-                    descripcion: descripcion,
-                    stock: Number(stock),
-                    precio: parseFloat(precio),
-                });
-                setNombre("");
-                setPrecio("");
-                setDescripcion("");
-                setStock("");
-                cargarDatos(); // Volver a cargar la lista
-            } catch (error) {
-                console.error("Error al registrar producto:", error);
-            }
-        } else {
-            alert("Por favor, complete todos los campos.");
-        }
-    };
+const FormularioProductos = ({ nuevoProducto, manejoCambio, guardarProducto, actualizarProducto, modEdicion }) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.titulo}>Registro de Productos</Text>
+            <Text style={styles.titulo}>
+                {modEdicion ? "Actualizar Producto" : "Registro de Producto"}
+            </Text>
             <TextInput
                 style={styles.input}
                 placeholder="Nombre del producto"
-                value={nombre}
-                onChangeText={setNombre}
+                value={nuevoProducto.nombre}
+                onChangeText={(nombre) => manejoCambio('nombre', nombre)}
             />
-             <TextInput
+            <TextInput
                 style={styles.input}
-                placeholder="descripcion"
-                value={descripcion}
-                onChangeText={setDescripcion}
-            />
-             <TextInput
-                style={styles.input}
-                placeholder="Stock"
-                value={stock}
-                onChangeText={setStock}
-                keyboardType="numeric"
+                placeholder="Descripción"
+                value={nuevoProducto.descripcion}
+                onChangeText={(descripcion) => manejoCambio('descripcion', descripcion)}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Precio"
-                value={precio}
-                onChangeText={setPrecio}
                 keyboardType="numeric"
+                value={nuevoProducto.precio}
+                onChangeText={(precio) => manejoCambio('precio', precio)}
             />
-            <Button title="Guardar" onPress={guardarProducto} />
+            <TextInput
+                style={styles.input}
+                placeholder="Stock"
+                keyboardType="numeric"
+                value={nuevoProducto.stock}
+                onChangeText={(stock) => manejoCambio('stock', stock)}
+            />
+            <Button
+                title={modEdicion ? "Actualizar" : "Guardar"}
+                onPress={modEdicion ? actualizarProducto : guardarProducto}
+            />
         </View>
     );
 };

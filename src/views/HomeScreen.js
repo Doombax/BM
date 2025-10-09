@@ -13,7 +13,18 @@ export default function HomeScreen({ navigation }) {
                 title="Ir a Clientes"
                 onPress={() => navigation.navigate('Clientes')}
             />
+            <View style={styles.spacer} />
+            <Button
+                title="Ir a Promedio"  // ← Corregido: "romedio" → "Promedio"
+                onPress={() => navigation.navigate('Promedio')}
+            />
+            <View style={styles.spacer} />
+            <Button
+                title="Ir a Empleado"
+                onPress={() => navigation.navigate('Empleados')}
+            />
         </View>
+
     );
 }
 

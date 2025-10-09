@@ -3,47 +3,53 @@ import { View, TextInput, Button, StyleSheet, Text } from "react-native";
 import { db } from "../database/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 
-const FormularioClientes = ({ nuevoCliente, manejoCambio, guardarCliente, actualizarCliente, modEdicion }) => {
+const FormularioEmpleados = ({ nuevoEmpleado, manejoCambio, guardarEmpleado, actualizarEmpleado, modEdicion }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.titulo}>
-                {modEdicion ? "Actualizar cliente" : "Registro de cliente"}
+                {modEdicion ? "Actualizar empleado" : "Registro de empleado"}
             </Text>
             <TextInput
                 style={styles.input}
-                placeholder="Nombres del cliente"
-                value={nuevoCliente.nombre}
+                placeholder="Nombres del empleado"
+                value={nuevoEmpleado.nombre}
                 onChangeText={(nombre) => manejoCambio('nombre', nombre)}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Apellidos del cliente"
-                value={nuevoCliente.apellido}
+                placeholder="Apellidos del empleado"
+                value={nuevoEmpleado.apellido}
                 onChangeText={(apellido) => manejoCambio('apellido', apellido)}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Edad"
                 keyboardType="numeric"
-                value={nuevoCliente.edad}
+                value={nuevoEmpleado.edad}
                 onChangeText={(edad) => manejoCambio('edad', edad)}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Telefono"
                 keyboardType="numeric"
-                value={nuevoCliente.telefono}
+                value={nuevoEmpleado.telefono}
                 onChangeText={(telefono) => manejoCambio('telefono', telefono)}
             />
              <TextInput
                 style={styles.input}
                 placeholder="Cedula"
-                value={nuevoCliente.cedula}
+                value={nuevoEmpleado.cedula}
                 onChangeText={(cedula) => manejoCambio('cedula', cedula)}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Cargo del empleado"
+                value={nuevoEmpleado.cargo}
+                onChangeText={(cargo) => manejoCambio('cargo', cargo)}
             />
             <Button
                 title={modEdicion ? "Actualizar" : "Guardar"}
-                onPress={modEdicion ? actualizarCliente : guardarCliente}
+                onPress={modEdicion ? actualizarEmpleado : guardarEmpleado}
             />
         </View>
     );
@@ -56,4 +62,4 @@ const styles = StyleSheet.create({
     input: { borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10 }
 });
 
-export default FormularioClientes;
+export default FormularioEmpleados;
