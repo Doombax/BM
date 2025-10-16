@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert, Button } from "react-native";
 import { db } from "../database/firebaseConfig.js";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
 import FormularioProductos from "../components/FormularioProductos";
 import TablaProductos from "../components/TablaProductos.js";
 
-const Productos = () => {
+const Productos = ({ cerrarSesion }) => {
     const [nuevoProducto, setNuevoProducto] = useState({
         nombre: "",
         descripcion: "",
         precio: "",
-        stock: ""
+        stock: "",
+        hora: "",
     });
     const [productos, setProductos] = useState([]);
     const [modEdicion, setModEdicion] = useState(false);
@@ -31,8 +32,9 @@ const Productos = () => {
                     descripcion: nuevoProducto.descripcion,
                     precio: parseFloat(nuevoProducto.precio),
                     stock: parseFloat(nuevoProducto.stock),
+                    hora: parseFloat(nuevoProducto.hora),
                 });
-                setNuevoProducto({ nombre: "", descripcion: "", precio: "", stock: "" }); // Limpiar formulario
+                setNuevoProducto({ nombre: "", descripcion: "", precio: "", stock: "", hora: "" }); // Limpiar formulario
                 cargarDatos(); // Recargar lista
             } else {
                 Alert.alert("Por favor, complete todos los campos.");
@@ -50,8 +52,9 @@ const Productos = () => {
                     descripcion: nuevoProducto.descripcion,
                     precio: parseFloat(nuevoProducto.precio),
                     stock: parseFloat(nuevoProducto.stock),
+                    hora: parseFloat(nuevoProducto.hora),
                 });
-                setNuevoProducto({ nombre: "", descripcion: "", precio: "", stock: "" });
+                setNuevoProducto({ nombre: "", descripcion: "", precio: "", stock: "", hora: "" });
                 setModEdicion(false);
                 setProductoId(null);
                 cargarDatos(); // Recargar lista
@@ -102,6 +105,7 @@ const Productos = () => {
 
     return (
         <View style={styles.container}>
+            <Button title="Cerrar Sesión" onPress={cerrarSesion} />
             <FormularioProductos
                 nuevoProducto={nuevoProducto}
                 manejoCambio={manejoCambio}

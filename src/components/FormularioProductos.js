@@ -33,6 +33,13 @@ const FormularioProductos = ({ nuevoProducto, manejoCambio, guardarProducto, act
                 value={nuevoProducto.stock}
                 onChangeText={(stock) => manejoCambio('stock', stock)}
             />
+            <TextInput
+                style={styles.input}
+                placeholder="Hora"
+                keyboardType="numeric"
+                value={nuevoProducto.hora}
+                onChangeText={(hora) => manejoCambio('hora', hora)}
+            />
             <Button
                 title={modEdicion ? "Actualizar" : "Guardar"}
                 onPress={modEdicion ? actualizarProducto : guardarProducto}

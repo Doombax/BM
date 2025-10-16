@@ -12,6 +12,7 @@ const TablaProductos = ({ productos, eliminarProducto, editarProducto }) => {
                 <Text style={[styles.celda, styles.textoEncabezado]}>Descripción</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Precio</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Stock</Text>
+                <Text style={[styles.celda, styles.textoEncabezado]}>Hora</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Acciones</Text>
             </View>
             {/* Contenido de la tabla */}
@@ -22,6 +23,7 @@ const TablaProductos = ({ productos, eliminarProducto, editarProducto }) => {
                         <Text style={styles.celda}>{item.descripcion}</Text>
                         <Text style={styles.celda}>{item.precio}</Text>
                         <Text style={styles.celda}>{item.stock}</Text>
+                        <Text style={styles.celda}>{item.hora}</Text>
                         <View style={styles.celdaAcciones}>
                             <TouchableOpacity
                                 style={styles.botonActualizar}
