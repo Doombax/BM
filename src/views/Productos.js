@@ -105,7 +105,6 @@ const Productos = ({ cerrarSesion }) => {
 
     return (
         <View style={styles.container}>
-            <Button title="Cerrar Sesión" onPress={cerrarSesion} />
             <FormularioProductos
                 nuevoProducto={nuevoProducto}
                 manejoCambio={manejoCambio}

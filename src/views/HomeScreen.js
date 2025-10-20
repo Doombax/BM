@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, cerrarSesion }) {
     return (
         <View style={styles.container}>
+             <Button title="Cerrar Sesión" onPress={cerrarSesion} />
+              <View style={styles.spacer} />
             <Button
                 title="Ir a Productos"
                 onPress={() => navigation.navigate('Productos')}
@@ -15,7 +17,7 @@ export default function HomeScreen({ navigation }) {
             />
             <View style={styles.spacer} />
             <Button
-                title="Ir a Promedio"  // ← Corregido: "romedio" → "Promedio"
+                title="Ir a Promedio" 
                 onPress={() => navigation.navigate('Promedio')}
             />
             <View style={styles.spacer} />
