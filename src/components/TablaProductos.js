@@ -8,22 +8,24 @@ const TablaProductos = ({ productos, eliminarProducto, editarProducto }) => {
             <Text style={styles.titulo}>Tabla de Productos</Text>
             {/* Encabezado de la tabla */}
             <View style={[styles.fila, styles.encabezado]}>
+                <Text style={[styles.celda, styles.textoEncabezado]}>Codigo</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Nombre</Text>
+                <Text style={[styles.celda, styles.textoEncabezado]}>Categoria</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Descripción</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Precio</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Stock</Text>
-                <Text style={[styles.celda, styles.textoEncabezado]}>Hora</Text>
                 <Text style={[styles.celda, styles.textoEncabezado]}>Acciones</Text>
             </View>
             {/* Contenido de la tabla */}
             <ScrollView>
                 {productos.map((item) => (
                     <View key={item.id} style={styles.fila}>
+                        <Text style={styles.celda}>{item.codigo}</Text>
                         <Text style={styles.celda}>{item.nombre}</Text>
+                        <Text style={styles.celda}>{item.categoria}</Text>
                         <Text style={styles.celda}>{item.descripcion}</Text>
                         <Text style={styles.celda}>{item.precio}</Text>
                         <Text style={styles.celda}>{item.stock}</Text>
-                        <Text style={styles.celda}>{item.hora}</Text>
                         <View style={styles.celdaAcciones}>
                             <TouchableOpacity
                                 style={styles.botonActualizar}

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
 
-const BotonEliminarEmpleado = ({ id, eliminarEmpleado }) => {
+const BotonEliminarCategoria = ({ id, eliminarCategoria }) => {
 
     const [visible, setVisible] = useState(false);
 
     const confirmarEliminar = () => {
         setVisible(false);
-        eliminarEmpleado(id);
+        eliminarCategoria(id);
     };
     return (
         <View>
@@ -27,7 +27,7 @@ const BotonEliminarEmpleado = ({ id, eliminarEmpleado }) => {
             >
                 <View style={styles.overlay}>
                     <View style={styles.modal}>
-                        <Text style={styles.texto}>¿Desea eliminar este empleado?</Text>
+                        <Text style={styles.texto}>¿Desea eliminar esta categoria?</Text>
 
                         <View style={styles.fila}>
                             <TouchableOpacity
@@ -90,4 +90,4 @@ const styles = StyleSheet.create({
     textoAccion: { color: "white", fontWeight: "bold" },
 });
 
-export default BotonEliminarEmpleado;
+export default BotonEliminarCategoria;

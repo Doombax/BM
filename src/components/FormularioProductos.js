@@ -9,9 +9,21 @@ const FormularioProductos = ({ nuevoProducto, manejoCambio, guardarProducto, act
             </Text>
             <TextInput
                 style={styles.input}
+                placeholder="Codigo del producto"
+                value={nuevoProducto.codigo}
+                onChangeText={(codigo) => manejoCambio('codigo', codigo)}
+            />
+            <TextInput
+                style={styles.input}
                 placeholder="Nombre del producto"
                 value={nuevoProducto.nombre}
                 onChangeText={(nombre) => manejoCambio('nombre', nombre)}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Categoria del producto"
+                value={nuevoProducto.categoria}
+                onChangeText={(categoria) => manejoCambio('categoria', categoria)}
             />
             <TextInput
                 style={styles.input}
@@ -32,13 +44,6 @@ const FormularioProductos = ({ nuevoProducto, manejoCambio, guardarProducto, act
                 keyboardType="numeric"
                 value={nuevoProducto.stock}
                 onChangeText={(stock) => manejoCambio('stock', stock)}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Hora"
-                keyboardType="numeric"
-                value={nuevoProducto.hora}
-                onChangeText={(hora) => manejoCambio('hora', hora)}
             />
             <Button
                 title={modEdicion ? "Actualizar" : "Guardar"}
