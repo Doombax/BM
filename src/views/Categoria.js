@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Alert, Button } from "react-native";
 import { db } from "../database/firebaseConfig.js";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
-import FormularioCategorias from "../components/FormularioCategoria.js";
+import FormularioCategorias from "../Screens/FormularioCategoria.js";
 import TablaCategorias from "../components/TablaCategoria.js";
 
 
