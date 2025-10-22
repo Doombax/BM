@@ -5,9 +5,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 
-const Tab = createBottomTabNavigator();
-const StackNav = createNativeStackNavigator();
 
+
+
+
+const Tab = createBottomTabNavigator();
 function MyTabsCliente() {
     return (
         <Tab.Navigator>
@@ -84,6 +86,8 @@ function MyTabsAdmon() {
     )
 }
 
+
+const StackNav = createNativeStackNavigator();
 function StackLogin() {
     return (
         <StackNav.Navigator initialRouteName="Login" 
@@ -95,20 +99,6 @@ function StackLogin() {
     )
 }
 
-/*function DrawerNavigate() {
-    return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer>
-                <Drawer.Navigator initialRouteName="MostrarProductos">
-                    <Drawer.Screen name="Listar Productos" component={MostrarProductos} />
-                    <Drawer.Screen name="Categorias" component={AgregarCategoria} />
-                </Drawer.Navigator>
-            </NavigationContainer>
-        </GestureHandlerRootView>
-
-    );
-
-}*/
 
 export default function Navegacion() {
     return (
