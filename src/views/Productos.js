@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert, Button } from "react-native";
+import { View, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Text } from "react-native";
 import { db } from "../database/firebaseConfig.js";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
 import FormularioProductos from "../components/FormularioProductos";
@@ -17,6 +17,8 @@ const Productos = ({}) => {
     const [productos, setProductos] = useState([]);
     const [modEdicion, setModEdicion] = useState(false);
     const [productoId, setProductoId] = useState(null);
+    const [vista, setVista] = useState("list");
+
 
     const manejoCambio = (nombre, valor) => {
         setNuevoProducto((prev) => ({
@@ -37,6 +39,7 @@ const Productos = ({}) => {
                     stock: parseFloat(nuevoProducto.stock),
                 });
                 setNuevoProducto({codigo: "", nombre: "", categoria: "", descripcion: "", precio: "", stock: "",}); // Limpiar formulario
+                setVista("list")
                 cargarDatos(); // Recargar lista
             } else {
                 Alert.alert("Por favor, complete todos los campos.");
@@ -60,6 +63,7 @@ const Productos = ({}) => {
                 setNuevoProducto({ codigo: "", nombre: "", categoria: "", descripcion: "", precio: "", stock: "",});
                 setModEdicion(false);
                 setProductoId(null);
+                setVista("add");
                 cargarDatos(); // Recargar lista
             } else {
                 Alert.alert("Por favor, complete todos los campos.");
@@ -109,25 +113,77 @@ const Productos = ({}) => {
     }, []);
 
     return (
-        <View style={styles.container}>
-            <FormularioProductos
-                nuevoProducto={nuevoProducto}
-                manejoCambio={manejoCambio}
-                guardarProducto={guardarProducto}
-                actualizarProducto={actualizarProducto}
-                modEdicion={modEdicion}
-            />
-            <TablaProductos
-                productos={productos}
-                eliminarProducto={eliminarProducto}
-                editarProducto={editarProducto}
-            />
-        </View>
-    );
+  <SafeAreaView style={styles.safe}>
+    <View style={styles.container}>
+      {/* Selector Superior */}
+      <View style={styles.tabWrapper}>
+        <TouchableOpacity
+          style={[styles.tabButton, vista === "list" ? styles.tabActive : null]}
+          onPress={() => {
+            setVista("list");
+            setModEdicion(false);
+            setNuevoProducto({
+              codigo: "",
+              nombre: "",
+              categoria: "",
+              descripcion: "",
+              precio: "",
+              stock: "",
+            });
+          }}
+        >
+          <Text style={[styles.tabText, vista === "list" && styles.tabTextActive]}>Productos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tabButton, vista === "add" ? styles.tabActive : null]}
+          onPress={() => {
+            setVista("add");
+            setModEdicion(false);
+          }}
+        >
+          <Text style={[styles.tabText, vista === "add" && styles.tabTextActive]}>Agregar Productos</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Contenido */}
+      <View style={styles.content}>
+        {vista === "list" ? (
+          <TablaProductos
+            productos={productos}
+            eliminarProducto={eliminarProducto}
+            editarProducto={editarProducto}
+          />
+        ) : (
+          <FormularioProductos
+            nuevoProducto={nuevoProducto}
+            manejoCambio={manejoCambio}
+            guardarProducto={guardarProducto}
+            actualizarProducto={actualizarProducto}
+            modEdicion={modEdicion}
+          />
+        )}
+      </View>
+    </View>
+  </SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20 }
+  safe: { flex: 1, backgroundColor: "#1A1018" },
+  container: { flex: 1, paddingHorizontal: 16, paddingTop: 18 },
+  tabWrapper: {
+    flexDirection: "row",
+    backgroundColor: "#161617",
+    borderRadius: 14,
+    padding: 4,
+    marginBottom: 12,
+  },
+  tabButton: { flex: 1, paddingVertical: 12, borderRadius: 10, alignItems: "center" },
+  tabActive: { backgroundColor: "#7B2CBF" },
+  tabText: { color: "#9aa0a6", fontWeight: "600", fontSize: 15 },
+  tabTextActive: { color: "#FFFFFF" },
+  content: { flex: 1 },
 });
 
 export default Productos;

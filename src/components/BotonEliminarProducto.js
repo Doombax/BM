@@ -10,84 +10,46 @@ const BotonEliminarProducto = ({ id, eliminarProducto }) => {
         eliminarProducto(id);
     };
     return (
-        <View>
-            {/* Botón pequeño */}
-            <TouchableOpacity
-                style={styles.boton}
-                onPress={() => setVisible(true)}
-            >
-                <Text style={styles.textoBoton}>🗑</Text>
+  <View>
+    <TouchableOpacity style={styles.boton} onPress={() => setVisible(true)}>
+      <Text style={styles.botonText}>Eliminar</Text>
+    </TouchableOpacity>
+
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={() => setVisible(false)}>
+      <View style={styles.modalBackdrop}>
+        <View style={styles.modalBox}>
+          <Text style={styles.modalTitle}>Confirmar eliminación</Text>
+          <Text style={styles.modalText}>¿Estás seguro que querés eliminar este producto?</Text>
+
+          <View style={styles.modalActions}>
+            <TouchableOpacity style={[styles.modalButton, styles.cancel]} onPress={() => setVisible(false)}>
+              <Text style={styles.modalButtonText}>Cancelar</Text>
             </TouchableOpacity>
-            {/* Modal de confirmación */}
-            <Modal
-                visible={visible}
-                transparent
-                animationType="fade"
-                onRequestClose={() => setVisible(false)}
-            >
-                <View style={styles.overlay}>
-                    <View style={styles.modal}>
-                        <Text style={styles.texto}>¿Desea eliminar este producto?</Text>
 
-                        <View style={styles.fila}>
-                            <TouchableOpacity
-                                style={[styles.botonAccion, styles.cancelar]}
-                                onPress={() => setVisible(false)}
-                            >
-                                <Text style={styles.textoAccion}>Cancelar</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                style={[styles.botonAccion, styles.confirmar]}
-                                onPress={confirmarEliminar}
-                            >
-                                <Text style={styles.textoAccion}>Eliminar</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            <TouchableOpacity style={[styles.modalButton, styles.confirm]} onPress={confirmarEliminar}>
+              <Text style={styles.modalButtonText}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-    );
+      </View>
+    </Modal>
+  </View>
+);
+
 };
 
 const styles = StyleSheet.create({
-    boton: {
-        padding: 4,
-        borderRadius: 5,
-        alignItems: "center",
-        justifyContent: "center",
-        alignSelf: "center",
-        backgroundColor: "#f3f3f7ff",
-    },
-    textoBoton: { color: "white", fontSize: 14 },
-    overlay: {
-        flex: 1,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modal: {
-        backgroundColor: "white",
-        padding: 20,
-        borderRadius: 10,
-        width: "80%",
-        alignItems: "center",
-    },
-    texto: { fontSize: 18, marginBottom: 20 },
-    fila: {
-        flexDirection: "row", justifyContent: "space-between", width: "100%"
-    },
-    botonAccion: {
-        flex: 1,
-        marginHorizontal: 5,
-        padding: 10,
-        borderRadius: 5,
-        alignItems: "center",
-    },
-    cancelar: { backgroundColor: "#ccc" },
-    confirmar: { backgroundColor: "#e63946" },
-    textoAccion: { color: "white", fontWeight: "bold" },
+  boton: { backgroundColor: "#E63946", paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8 },
+  botonText: { color: "#fff", fontWeight: "700" },
+  modalBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
+  modalBox: { width: "86%", backgroundColor: "#0E0E10", borderRadius: 12, padding: 18, borderWidth: 1, borderColor: "#222" },
+  modalTitle: { color: "#fff", fontWeight: "700", fontSize: 16, marginBottom: 8 },
+  modalText: { color: "#bfbfbf", fontSize: 13, marginBottom: 16 },
+  modalActions: { flexDirection: "row", justifyContent: "flex-end" },
+  modalButton: { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 8, marginLeft: 8 },
+  cancel: { backgroundColor: "#333" },
+  confirm: { backgroundColor: "#E63946" },
+  modalButtonText: { color: "#fff", fontWeight: "700" },
 });
 
 export default BotonEliminarProducto;
