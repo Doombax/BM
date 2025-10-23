@@ -1,26 +1,31 @@
-import React from 'react';
-import {
-  View,
-  StyleSheet,
-  Alert,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AlertaModal from '../components/shared/AlertaModal';
 
 export default function Settings() {
   const navigation = useNavigation();
   const auth = getAuth();
 
+  const [alertaVisible, setAlertaVisible] = useState(false);
+  const [alertaTitulo, setAlertaTitulo] = useState('');
+  const [alertaMensaje, setAlertaMensaje] = useState('');
+  const [redirigir, setRedirigir] = useState(false);
+
   const cerrarSesion = async () => {
     try {
       await signOut(auth);
-      Alert.alert('Sesión cerrada', 'Has salido correctamente.');
-      navigation.replace('Login');
+      setAlertaTitulo('Sesión cerrada');
+      setAlertaMensaje('Has salido correctamente.');
+      setRedirigir(true);
+      setAlertaVisible(true);
     } catch (error) {
-      Alert.alert('Error', 'No se pudo cerrar la sesión.');
+      setAlertaTitulo('Error');
+      setAlertaMensaje('No se pudo cerrar la sesión.');
+      setRedirigir(false);
+      setAlertaVisible(true);
       console.error('Error al cerrar sesión:', error);
     }
   };
@@ -33,6 +38,16 @@ export default function Settings() {
           <Text style={styles.botonTexto}>Cerrar sesión</Text>
         </TouchableOpacity>
       </View>
+
+      <AlertaModal
+        visible={alertaVisible}
+        titulo={alertaTitulo}
+        mensaje={alertaMensaje}
+        onCerrar={() => {
+          setAlertaVisible(false);
+          if (redirigir) navigation.replace('Login');
+        }}
+      />
     </SafeAreaView>
   );
 }

@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import {TextInput,TouchableOpacity,Alert,StyleSheet,Text,View,Image,KeyboardAvoidingView,Platform,} from 'react-native';
+import {TextInput,TouchableOpacity,StyleSheet,Text,View,Image,KeyboardAvoidingView,Platform,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../database/firebaseConfig';
+import AlertaModal from '../shared/AlertaModal';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [alertaVisible, setAlertaVisible] = useState(false);
+  const [alertaTitulo, setAlertaTitulo] = useState('');
+  const [alertaMensaje, setAlertaMensaje] = useState('');
 
   const handleLogin = async () => {
     try {
@@ -18,10 +23,14 @@ export default function LoginScreen({ navigation }) {
       } else if (userEmail === 'cliente@gmail.com') {
         navigation.replace('ClienteScreen');
       } else {
-        Alert.alert('Acceso denegado', 'Usuario no autorizado.');
+        setAlertaTitulo('Acceso denegado');
+        setAlertaMensaje('Usuario no autorizado.');
+        setAlertaVisible(true);
       }
     } catch (error) {
-      Alert.alert('Error', 'Credenciales incorrectas.');
+      setAlertaTitulo('Credenciales incorrectas');
+      setAlertaMensaje('Verificá tu correo y contraseña.');
+      setAlertaVisible(true);
     }
   };
 
@@ -65,6 +74,13 @@ export default function LoginScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+
+      <AlertaModal
+        visible={alertaVisible}
+        titulo={alertaTitulo}
+        mensaje={alertaMensaje}
+        onCerrar={() => setAlertaVisible(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -72,7 +88,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', // fondo oscuro para que el logo blanco resalte
+    backgroundColor: '#121212',
   },
   inner: {
     flex: 1,
@@ -83,11 +99,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  logo: {
-    width: 80,
-    height: 80,
-    resizeMode: 'contain',
-  },
+ logo: {
+  width: 200,
+  height: 120,
+  resizeMode: 'contain',
+},
   titulo: {
     textAlign: 'center',
     fontSize: 22,
@@ -114,7 +130,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   boton: {
-    backgroundColor: '#D96C9F', // rosa suave
+    backgroundColor: '#D96C9F',
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',

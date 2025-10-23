@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { BackHandler } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Vistas de administración
+
 import ProductosScreen from '../views/ProductosScreen';
 import CategoriaScreen from '../views/CategoriaScreen';
 import Settings from '../views/Settings';

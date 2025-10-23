@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { doc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../database/firebaseConfig';
 import FormularioProducto from '../components/admin/FormularioProductos';
 import * as ImagePicker from 'expo-image-picker';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import AlertaModal from '../components/shared/AlertaModal';
 
 export default function EditarProductoScreen() {
   const route = useRoute();
@@ -15,16 +16,26 @@ export default function EditarProductoScreen() {
   const [datosProducto, setDatosProducto] = useState(producto);
   const [listaCategorias, setListaCategorias] = useState([]);
 
-  const cargarCategorias = async () => {
-    const snapshot = await getDocs(collection(db, 'categoria'));
-    const data = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setListaCategorias(data);
-  };
+  const [alertaVisible, setAlertaVisible] = useState(false);
+  const [alertaTitulo, setAlertaTitulo] = useState('');
+  const [alertaMensaje, setAlertaMensaje] = useState('');
 
   useEffect(() => {
+    const cargarCategorias = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, 'categoria'));
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          categoria: doc.data().categoria,
+        }));
+        setListaCategorias(data);
+      } catch (error) {
+        setAlertaTitulo('Error');
+        setAlertaMensaje('No se pudieron cargar las categorías.');
+        setAlertaVisible(true);
+      }
+    };
+
     cargarCategorias();
   }, []);
 
@@ -35,7 +46,9 @@ export default function EditarProductoScreen() {
   const seleccionarImagen = async () => {
     const permiso = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permiso.granted) {
-      Alert.alert('Permiso denegado', 'Necesitamos acceso a tus fotos.');
+      setAlertaTitulo('Permiso denegado');
+      setAlertaMensaje('Necesitamos acceso a tus fotos.');
+      setAlertaVisible(true);
       return;
     }
 
@@ -57,12 +70,16 @@ export default function EditarProductoScreen() {
     } = datosProducto;
 
     if (!codigo || !nombre || !categoria || !precio || !stock || !foto) {
-      Alert.alert('Campos incompletos', 'Por favor, completá todos los campos obligatorios.');
+      setAlertaTitulo('Campos incompletos');
+      setAlertaMensaje('Por favor, completá todos los campos obligatorios.');
+      setAlertaVisible(true);
       return;
     }
 
     if (!producto?.id) {
-      Alert.alert('Error', 'No se encontró el ID del producto.');
+      setAlertaTitulo('Error');
+      setAlertaMensaje('No se encontró el ID del producto.');
+      setAlertaVisible(true);
       return;
     }
 
@@ -79,16 +96,22 @@ export default function EditarProductoScreen() {
         color,
       });
 
-      Alert.alert('Producto actualizado', 'Los cambios se guardaron correctamente.');
-      navigation.goBack();
+      setAlertaTitulo('Producto actualizado');
+      setAlertaMensaje('Los cambios se guardaron correctamente.');
+      setAlertaVisible(true);
     } catch (error) {
-      Alert.alert('Error', 'No se pudo actualizar el producto.');
+      setAlertaTitulo('Error');
+      setAlertaMensaje('No se pudo actualizar el producto.');
+      setAlertaVisible(true);
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <FormularioProducto
           nuevoProducto={datosProducto}
           manejoCambio={manejoCambio}
@@ -97,14 +120,23 @@ export default function EditarProductoScreen() {
           modEdicion={true}
           listaCategorias={listaCategorias}
         />
-      </ScrollView>
+        <AlertaModal
+          visible={alertaVisible}
+          titulo={alertaTitulo}
+          mensaje={alertaMensaje}
+          onCerrar={() => {
+            setAlertaVisible(false);
+            if (alertaTitulo === 'Producto actualizado') navigation.goBack();
+          }}
+        />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    paddingBottom: 60,
+    flex: 1,
+    backgroundColor: '#121212',
   },
 });
