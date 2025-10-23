@@ -2,85 +2,107 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Text } from "react-native";
 import { db } from "../database/firebaseConfig.js";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
-import FormularioProductos from "../components/FormularioProductos";
-import TablaProductos from "../components/TablaProductos.js";
+import * as ImagePicker from "expo-image-picker";
+import FormularioProductos from "../components/admin/FormularioProductos";
 
-const Productos = ({}) => {
-    const [nuevoProducto, setNuevoProducto] = useState({
-        codigo: "",
-        nombre: "",
-        categoria:"",
-        descripcion: "",
-        precio: "",
-        stock: "",
+const Productos = () => {
+  const [nuevoProducto, setNuevoProducto] = useState({
+    codigo: "",
+    nombre: "",
+    categoria: "",
+    precio: "",
+    stock: "",
+    foto: "",
+    talla: "",
+    marca: "",
+    color: "",
+  });
+
+  const [productos, setProductos] = useState([]);
+  const [modEdicion, setModEdicion] = useState(false);
+  const [productoId, setProductoId] = useState(null);
+
+  const manejoCambio = (campo, valor) => {
+    setNuevoProducto((prev) => ({ ...prev, [campo]: valor }));
+  };
+
+  const seleccionarImagen = async () => {
+    const permiso = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permiso.granted) return;
+
+    const resultado = await ImagePicker.launchImageLibraryAsync({ base64: true, quality: 0.5 });
+    if (!resultado.canceled) {
+      const base64 = `data:image/jpeg;base64,${resultado.assets[0].base64}`;
+      setNuevoProducto((prev) => ({ ...prev, foto: base64 }));
+    }
+  };
+
+  const guardarProducto = async () => {
+    try {
+      await addDoc(collection(db, "productos"), {
+        ...nuevoProducto,
+        precio: parseFloat(nuevoProducto.precio),
+        stock: parseFloat(nuevoProducto.stock),
+      });
+      resetFormulario();
+      cargarDatos();
+    } catch (error) {
+      Alert.alert("Error", "No se pudo guardar el producto.");
+    }
+  };
+
+  const actualizarProducto = async () => {
+    if (!productoId) return;
+    try {
+      await updateDoc(doc(db, "productos", productoId), {
+        ...nuevoProducto,
+        precio: parseFloat(nuevoProducto.precio),
+        stock: parseFloat(nuevoProducto.stock),
+      });
+      resetFormulario();
+      cargarDatos();
+    } catch (error) {
+      Alert.alert("Error", "No se pudo actualizar el producto.");
+    }
+  };
+
+  const eliminarProducto = async (id) => {
+    await deleteDoc(doc(db, "productos", id));
+    cargarDatos();
+  };
+
+  const editarProducto = (item) => {
+    setNuevoProducto({
+      codigo: item.codigo || "",
+      nombre: item.nombre || "",
+      categoria: item.categoria || "",
+      precio: item.precio?.toString() || "",
+      stock: item.stock?.toString() || "",
+      foto: item.foto || "",
+      talla: item.talla || "",
+      marca: item.marca || "",
+      color: item.color || "",
     });
-    const [productos, setProductos] = useState([]);
-    const [modEdicion, setModEdicion] = useState(false);
-    const [productoId, setProductoId] = useState(null);
-    const [vista, setVista] = useState("list");
+    setProductoId(item.id);
+    setModEdicion(true); // ✅ activa el formulario
+  };
 
+  const resetFormulario = () => {
+    setNuevoProducto({
+      codigo: "",
+      nombre: "",
+      categoria: "",
+      precio: "",
+      stock: "",
+      foto: "",
+      talla: "",
+      marca: "",
+      color: "",
+    });
+    setProductoId(null);
+    setModEdicion(false);
+  };
 
-    const manejoCambio = (nombre, valor) => {
-        setNuevoProducto((prev) => ({
-            ...prev,
-            [nombre]: valor,
-        }));
-    };
-
-    const guardarProducto = async () => {
-        try {
-            if (nuevoProducto.codigo && nuevoProducto.nombre && nuevoProducto.categoria && nuevoProducto.descripcion && nuevoProducto.precio && nuevoProducto.stock) {
-                await addDoc(collection(db, "productos"), {
-                    nombre: nuevoProducto.nombre,
-                    codigo:nuevoProducto.codigo,
-                    categoria:nuevoProducto.categoria,
-                    descripcion: nuevoProducto.descripcion,
-                    precio: parseFloat(nuevoProducto.precio),
-                    stock: parseFloat(nuevoProducto.stock),
-                });
-                setNuevoProducto({codigo: "", nombre: "", categoria: "", descripcion: "", precio: "", stock: "",}); // Limpiar formulario
-                setVista("list")
-                cargarDatos(); // Recargar lista
-            } else {
-                Alert.alert("Por favor, complete todos los campos.");
-            }
-        } catch (error) {
-            console.error("Error al registrar producto:", error);
-        }
-    };
-
-    const actualizarProducto = async () => {
-        try {
-            if (nuevoProducto.codigo && nuevoProducto.nombre && nuevoProducto.categoria && nuevoProducto.descripcion && nuevoProducto.precio && nuevoProducto.stock) {
-                await updateDoc(doc(db, "productos", productoId), {
-                    nombre: nuevoProducto.nombre,
-                    codigo:nuevoProducto.codigo,
-                    categoria:nuevoProducto.categoria,
-                    descripcion: nuevoProducto.descripcion,
-                    precio: parseFloat(nuevoProducto.precio),
-                    stock: parseFloat(nuevoProducto.stock),
-                });
-                setNuevoProducto({ codigo: "", nombre: "", categoria: "", descripcion: "", precio: "", stock: "",});
-                setModEdicion(false);
-                setProductoId(null);
-                setVista("add");
-                cargarDatos(); // Recargar lista
-            } else {
-                Alert.alert("Por favor, complete todos los campos.");
-            }
-        } catch (error) {
-            console.error("Error al actualizar producto:", error);
-        }
-    };
-
-    const eliminarProducto = async (id) => {
-        try {
-            await deleteDoc(doc(db, "productos", id));
-            cargarDatos(); // Recargar la lista
-        } catch (error) {
-            console.error("Error al eliminar;", error);
-        }
-    };
 
     const cargarDatos = async () => {
         try {
@@ -95,18 +117,6 @@ const Productos = ({}) => {
         }
     };
 
-    const editarProducto = (item) => {
-        setNuevoProducto({
-            codigo: item.codigo,
-            nombre: item.nombre,
-            categoria: item.categoria,
-            descripcion: item.descripcion,
-            precio: item.precio.toString(),
-            stock: item.stock.toString(),
-        });
-        setProductoId(item.id);
-        setModEdicion(true);
-    };
 
     useEffect(() => {
         cargarDatos();
