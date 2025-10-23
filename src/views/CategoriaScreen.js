@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { StyleSheet, Text, Alert } from 'react-native';
 import { db } from '../database/firebaseConfig';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import TablaCategorias from '../components/admin/TablaCategoria';
 import FloatingActions from '../components/shared/FloatingActions';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function CategoriaScreen() {
   const [categorias, setCategorias] = useState([]);
@@ -19,6 +19,12 @@ export default function CategoriaScreen() {
     }));
     setCategorias(data);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      cargarCategorias();
+    }, [])
+  );
 
   const eliminarCategoria = async (id) => {
     Alert.alert('¿Eliminar categoría?', 'Esta acción no se puede deshacer.', [
@@ -38,10 +44,6 @@ export default function CategoriaScreen() {
     navigation.navigate('EditarCategoria', { categoria: item });
   };
 
-  useEffect(() => {
-    cargarCategorias();
-  }, []);
-
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>Lista de categorías</Text>
@@ -56,6 +58,17 @@ export default function CategoriaScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 20,
+  },
+  titulo: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 20,
+    textAlign: 'center',
+    letterSpacing: 0.5,
+  },
 });

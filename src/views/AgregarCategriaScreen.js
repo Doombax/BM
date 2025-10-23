@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import { db } from '../database/firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import FormularioCategorias from '../components/admin/FormularioCategoria';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AgregarCategoriaScreen({ navigation }) {
   const [nuevaCategoria, setNuevaCategoria] = useState({ categoria: '' });
@@ -24,17 +25,21 @@ export default function AgregarCategoriaScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FormularioCategorias
         nuevaCategoria={nuevaCategoria}
         manejoCambio={manejoCambio}
         guardarCategoria={guardarCategoria}
         modEdicion={false}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 20,
+  },
 });

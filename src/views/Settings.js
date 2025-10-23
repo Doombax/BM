@@ -1,8 +1,14 @@
 import React from 'react';
-import { View, Button, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../database/firebaseConfig';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Settings() {
   const navigation = useNavigation();
@@ -12,7 +18,7 @@ export default function Settings() {
     try {
       await signOut(auth);
       Alert.alert('Sesión cerrada', 'Has salido correctamente.');
-      navigation.replace('Login'); // Redirige al login
+      navigation.replace('Login');
     } catch (error) {
       Alert.alert('Error', 'No se pudo cerrar la sesión.');
       console.error('Error al cerrar sesión:', error);
@@ -20,16 +26,46 @@ export default function Settings() {
   };
 
   return (
-    <View style={styles.container}>
-      <Button title="Cerrar sesión" onPress={cerrarSesion} color="#e63946" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.titulo}>Configuración</Text>
+        <TouchableOpacity style={styles.boton} onPress={cerrarSesion}>
+          <Text style={styles.botonTexto}>Cerrar sesión</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#121212',
     justifyContent: 'center',
     padding: 20,
+  },
+  card: {
+    backgroundColor: '#1E1E1E',
+    padding: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    gap: 20,
+  },
+  titulo: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
+  },
+  boton: {
+    backgroundColor: '#e63946',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  botonTexto: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

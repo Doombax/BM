@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../database/firebaseConfig';
 import FormularioProducto from '../components/admin/FormularioProductos';
 import * as ImagePicker from 'expo-image-picker';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function EditarProductoScreen({ route, navigation }) {
+export default function EditarProductoScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
   const { producto } = route.params;
+
   const [datosProducto, setDatosProducto] = useState(producto);
+  const [listaCategorias, setListaCategorias] = useState([]);
+
+  const cargarCategorias = async () => {
+    const snapshot = await getDocs(collection(db, 'categoria'));
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setListaCategorias(data);
+  };
+
+  useEffect(() => {
+    cargarCategorias();
+  }, []);
 
   const manejoCambio = (nombre, valor) => {
     setDatosProducto((prev) => ({ ...prev, [nombre]: valor }));
@@ -64,7 +82,6 @@ export default function EditarProductoScreen({ route, navigation }) {
       Alert.alert('Producto actualizado', 'Los cambios se guardaron correctamente.');
       navigation.goBack();
     } catch (error) {
-      console.error('Error al actualizar producto:', error);
       Alert.alert('Error', 'No se pudo actualizar el producto.');
     }
   };
@@ -78,6 +95,7 @@ export default function EditarProductoScreen({ route, navigation }) {
           guardarProducto={actualizarProducto}
           seleccionarImagen={seleccionarImagen}
           modEdicion={true}
+          listaCategorias={listaCategorias}
         />
       </ScrollView>
     </SafeAreaView>

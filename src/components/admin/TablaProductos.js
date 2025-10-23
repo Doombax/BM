@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function CatalogoProductos({ productos = [], editarProducto, eliminarProducto }) {
@@ -14,10 +21,10 @@ export default function CatalogoProductos({ productos = [], editarProducto, elim
       <Text style={styles.detalle}>Color: {item.color}</Text>
       <View style={styles.acciones}>
         <TouchableOpacity onPress={() => editarProducto(item)}>
-          <Ionicons name="create-outline" size={22} color="#007AFF" />
+          <Ionicons name="create-outline" size={22} color="#6CA8FF" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => eliminarProducto(item.id)}>
-          <Ionicons name="trash-outline" size={22} color="#FF3B30" />
+          <Ionicons name="trash-outline" size={22} color="#D96C9F" />
         </TouchableOpacity>
       </View>
     </View>
@@ -45,33 +52,38 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 10,
+    backgroundColor: '#1E1E1E',
+    borderRadius: 12,
+    padding: 12,
     width: '48%',
-    elevation: 2,
+    elevation: 3,
   },
   imagen: {
     width: '100%',
     height: 100,
     borderRadius: 8,
-    marginBottom: 8,
+    marginBottom: 10,
+    backgroundColor: '#333',
   },
   nombre: {
     fontWeight: 'bold',
     fontSize: 14,
+    color: '#FFFFFF',
+    marginBottom: 4,
   },
   precio: {
     fontSize: 13,
-    color: '#007AFF',
+    color: '#D96C9F',
+    marginBottom: 6,
   },
   detalle: {
     fontSize: 12,
-    color: '#555',
+    color: '#CCCCCC',
+    marginBottom: 2,
   },
   acciones: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 8,
+    marginTop: 10,
   },
 });

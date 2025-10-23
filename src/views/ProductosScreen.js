@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Alert } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { db } from '../database/firebaseConfig';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import TablaProductos from '../components/admin/TablaProductos';
+import CatalogoProductos from '../components/admin/TablaProductos';
 import FloatingActions from '../components/shared/FloatingActions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -57,7 +57,7 @@ export default function ProductosScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>Lista de productos</Text>
-      <TablaProductos
+      <CatalogoProductos
         productos={productos}
         editarProducto={editarProducto}
         eliminarProducto={eliminarProducto}
@@ -68,6 +68,17 @@ export default function ProductosScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 20,
+  },
+  titulo: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 20,
+    textAlign: 'center',
+    letterSpacing: 0.5,
+  },
 });
