@@ -3,8 +3,8 @@ import { View, StyleSheet, Alert, ScrollView } from "react-native";
 import { db } from "../database/firebaseConfig.js";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
-import FormularioProductos from "../components/FormularioProductos";
-import TablaProductos from "../components/TablaProductos.js";
+import FormularioProductos from "../components/admin/FormularioProductos.js";
+import TablaProductos from "../components/admin/TablaProductos.js";
 
 const Productos = () => {
   const [nuevoProducto, setNuevoProducto] = useState({
