@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { db } from "../database/firebaseConfig";
+import { View, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Text } from "react-native";
+import { db } from "../database/firebaseConfig.js";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import FormularioProductos from "../components/admin/FormularioProductos";
-import CatalogoProductos from "../components/admin/CatalogoProductos";
 
 const Productos = () => {
   const [nuevoProducto, setNuevoProducto] = useState({
@@ -105,42 +103,97 @@ const Productos = () => {
     setModEdicion(false);
   };
 
-  const cargarDatos = async () => {
-    const querySnapshot = await getDocs(collection(db, "productos"));
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setProductos(data);
-  };
 
-  useEffect(() => {
-    cargarDatos();
-  }, []);
+    const cargarDatos = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, "productos"));
+            const data = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setProductos(data);
+        } catch (error) {
+            console.error("Error al obtener documentos: ", error);
+        }
+    };
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <FormularioProductos
-          nuevoProducto={nuevoProducto}
-          manejoCambio={manejoCambio}
-          guardarProducto={guardarProducto}
-          actualizarProducto={actualizarProducto}
-          modEdicion={modEdicion}
-          seleccionarImagen={seleccionarImagen}
-        />
-        <CatalogoProductos
-          productos={productos}
-          editarProducto={editarProducto}
-          eliminarProducto={eliminarProducto}
-        />
-      </ScrollView>
-    </SafeAreaView>
-  );
+
+    useEffect(() => {
+        cargarDatos();
+    }, []);
+
+    return (
+  <SafeAreaView style={styles.safe}>
+    <View style={styles.container}>
+      {/* Selector Superior */}
+      <View style={styles.tabWrapper}>
+        <TouchableOpacity
+          style={[styles.tabButton, vista === "list" ? styles.tabActive : null]}
+          onPress={() => {
+            setVista("list");
+            setModEdicion(false);
+            setNuevoProducto({
+              codigo: "",
+              nombre: "",
+              categoria: "",
+              descripcion: "",
+              precio: "",
+              stock: "",
+            });
+          }}
+        >
+          <Text style={[styles.tabText, vista === "list" && styles.tabTextActive]}>Productos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tabButton, vista === "add" ? styles.tabActive : null]}
+          onPress={() => {
+            setVista("add");
+            setModEdicion(false);
+          }}
+        >
+          <Text style={[styles.tabText, vista === "add" && styles.tabTextActive]}>Agregar Productos</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Contenido */}
+      <View style={styles.content}>
+        {vista === "list" ? (
+          <TablaProductos
+            productos={productos}
+            eliminarProducto={eliminarProducto}
+            editarProducto={editarProducto}
+          />
+        ) : (
+          <FormularioProductos
+            nuevoProducto={nuevoProducto}
+            manejoCambio={manejoCambio}
+            guardarProducto={guardarProducto}
+            actualizarProducto={actualizarProducto}
+            modEdicion={modEdicion}
+          />
+        )}
+      </View>
+    </View>
+  </SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    padding: 20,
-    paddingBottom: 60,
+  safe: { flex: 1, backgroundColor: "#1A1018" },
+  container: { flex: 1, paddingHorizontal: 16, paddingTop: 18 },
+  tabWrapper: {
+    flexDirection: "row",
+    backgroundColor: "#161617",
+    borderRadius: 14,
+    padding: 4,
+    marginBottom: 12,
   },
+  tabButton: { flex: 1, paddingVertical: 12, borderRadius: 10, alignItems: "center" },
+  tabActive: { backgroundColor: "#7B2CBF" },
+  tabText: { color: "#9aa0a6", fontWeight: "600", fontSize: 15 },
+  tabTextActive: { color: "#FFFFFF" },
+  content: { flex: 1 },
 });
 
 export default Productos;
