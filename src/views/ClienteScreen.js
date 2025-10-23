@@ -1,26 +1,25 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import { signOut } from 'firebase/auth';
-import { useNavigation } from '@react-navigation/native';
-import { auth } from '../database/firebaseConfig';
+import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ClienteScreen() {
-  const navigation = useNavigation();
-
-  const cerrarSesion = async () => {
-    await signOut(auth);
-    navigation.replace('Login');
-  };
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.texto}>Bienvenido, cliente 👋</Text>
-      <Button title="Cerrar sesión" onPress={cerrarSesion} color="#e63946" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.titulo}>Bienvenido, cliente</Text>
+      {/* Aquí podés agregar más contenido para el cliente */}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  texto: { fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  titulo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
 });

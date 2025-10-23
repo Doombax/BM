@@ -1,45 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert, ScrollView } from "react-native";
-import { db } from "../database/firebaseConfig.js";
+import { ScrollView, StyleSheet, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { db } from "../database/firebaseConfig";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
-import * as ImagePicker from 'expo-image-picker';
-import FormularioProductos from "../components/admin/FormularioProductos.js";
-import TablaProductos from "../components/admin/TablaProductos.js";
+import * as ImagePicker from "expo-image-picker";
+import FormularioProductos from "../components/admin/FormularioProductos";
+import CatalogoProductos from "../components/admin/CatalogoProductos";
 
 const Productos = () => {
   const [nuevoProducto, setNuevoProducto] = useState({
     codigo: "",
     nombre: "",
     categoria: "",
-    descripcion: "",
     precio: "",
     stock: "",
     foto: "",
+    talla: "",
+    marca: "",
+    color: "",
   });
 
   const [productos, setProductos] = useState([]);
   const [modEdicion, setModEdicion] = useState(false);
   const [productoId, setProductoId] = useState(null);
 
-  const manejoCambio = (nombre, valor) => {
-    setNuevoProducto((prev) => ({
-      ...prev,
-      [nombre]: valor,
-    }));
+  const manejoCambio = (campo, valor) => {
+    setNuevoProducto((prev) => ({ ...prev, [campo]: valor }));
   };
 
   const seleccionarImagen = async () => {
     const permiso = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permiso.granted) {
-      Alert.alert("Permiso denegado", "Necesitamos acceso a tus fotos.");
-      return;
-    }
+    if (!permiso.granted) return;
 
-    const resultado = await ImagePicker.launchImageLibraryAsync({
-      base64: true,
-      quality: 0.5,
-    });
-
+    const resultado = await ImagePicker.launchImageLibraryAsync({ base64: true, quality: 0.5 });
     if (!resultado.canceled) {
       const base64 = `data:image/jpeg;base64,${resultado.assets[0].base64}`;
       setNuevoProducto((prev) => ({ ...prev, foto: base64 }));
@@ -48,86 +41,74 @@ const Productos = () => {
 
   const guardarProducto = async () => {
     try {
-      const { codigo, nombre, categoria, descripcion, precio, stock, foto } = nuevoProducto;
-      if (codigo && nombre && categoria && descripcion && precio && stock && foto) {
-        await addDoc(collection(db, "productos"), {
-          codigo,
-          nombre,
-          categoria,
-          descripcion,
-          precio: parseFloat(precio),
-          stock: parseFloat(stock),
-          foto,
-        });
-        setNuevoProducto({ codigo: "", nombre: "", categoria: "", descripcion: "", precio: "", stock: "", foto: "" });
-        cargarDatos();
-      } else {
-        Alert.alert("Por favor, complete todos los campos.");
-      }
+      await addDoc(collection(db, "productos"), {
+        ...nuevoProducto,
+        precio: parseFloat(nuevoProducto.precio),
+        stock: parseFloat(nuevoProducto.stock),
+      });
+      resetFormulario();
+      cargarDatos();
     } catch (error) {
-      console.error("Error al registrar producto:", error);
+      Alert.alert("Error", "No se pudo guardar el producto.");
     }
   };
 
   const actualizarProducto = async () => {
+    if (!productoId) return;
     try {
-      const { codigo, nombre, categoria, descripcion, precio, stock, foto } = nuevoProducto;
-      if (codigo && nombre && categoria && descripcion && precio && stock && foto) {
-        await updateDoc(doc(db, "productos", productoId), {
-          codigo,
-          nombre,
-          categoria,
-          descripcion,
-          precio: parseFloat(precio),
-          stock: parseFloat(stock),
-          foto,
-        });
-        setNuevoProducto({ codigo: "", nombre: "", categoria: "", descripcion: "", precio: "", stock: "", foto: "" });
-        setModEdicion(false);
-        setProductoId(null);
-        cargarDatos();
-      } else {
-        Alert.alert("Por favor, complete todos los campos.");
-      }
+      await updateDoc(doc(db, "productos", productoId), {
+        ...nuevoProducto,
+        precio: parseFloat(nuevoProducto.precio),
+        stock: parseFloat(nuevoProducto.stock),
+      });
+      resetFormulario();
+      cargarDatos();
     } catch (error) {
-      console.error("Error al actualizar producto:", error);
+      Alert.alert("Error", "No se pudo actualizar el producto.");
     }
   };
 
   const eliminarProducto = async (id) => {
-    try {
-      await deleteDoc(doc(db, "productos", id));
-      cargarDatos();
-    } catch (error) {
-      console.error("Error al eliminar:", error);
-    }
-  };
-
-  const cargarDatos = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "productos"));
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setProductos(data);
-    } catch (error) {
-      console.error("Error al obtener documentos: ", error);
-    }
+    await deleteDoc(doc(db, "productos", id));
+    cargarDatos();
   };
 
   const editarProducto = (item) => {
     setNuevoProducto({
-      codigo: item.codigo,
-      nombre: item.nombre,
-      categoria: item.categoria,
-      descripcion: item.descripcion,
-      precio: item.precio.toString(),
-      stock: item.stock.toString(),
+      codigo: item.codigo || "",
+      nombre: item.nombre || "",
+      categoria: item.categoria || "",
+      precio: item.precio?.toString() || "",
+      stock: item.stock?.toString() || "",
       foto: item.foto || "",
+      talla: item.talla || "",
+      marca: item.marca || "",
+      color: item.color || "",
     });
     setProductoId(item.id);
-    setModEdicion(true);
+    setModEdicion(true); // ✅ activa el formulario
+  };
+
+  const resetFormulario = () => {
+    setNuevoProducto({
+      codigo: "",
+      nombre: "",
+      categoria: "",
+      precio: "",
+      stock: "",
+      foto: "",
+      talla: "",
+      marca: "",
+      color: "",
+    });
+    setProductoId(null);
+    setModEdicion(false);
+  };
+
+  const cargarDatos = async () => {
+    const querySnapshot = await getDocs(collection(db, "productos"));
+    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setProductos(data);
   };
 
   useEffect(() => {
@@ -135,21 +116,23 @@ const Productos = () => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <FormularioProductos
-        nuevoProducto={nuevoProducto}
-        manejoCambio={manejoCambio}
-        guardarProducto={guardarProducto}
-        actualizarProducto={actualizarProducto}
-        modEdicion={modEdicion}
-        seleccionarImagen={seleccionarImagen}
-      />
-      <TablaProductos
-        productos={productos}
-        eliminarProducto={eliminarProducto}
-        editarProducto={editarProducto}
-      />
-    </ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <FormularioProductos
+          nuevoProducto={nuevoProducto}
+          manejoCambio={manejoCambio}
+          guardarProducto={guardarProducto}
+          actualizarProducto={actualizarProducto}
+          modEdicion={modEdicion}
+          seleccionarImagen={seleccionarImagen}
+        />
+        <CatalogoProductos
+          productos={productos}
+          editarProducto={editarProducto}
+          eliminarProducto={eliminarProducto}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

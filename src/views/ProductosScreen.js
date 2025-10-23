@@ -1,13 +1,15 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, Text, Alert } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { db } from '../database/firebaseConfig';
-import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import TablaProductos from '../components/admin/TablaProductos';
 import FloatingActions from '../components/shared/FloatingActions';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProductosScreen() {
   const [productos, setProductos] = useState([]);
+  const navigation = useNavigation();
 
   const cargarProductos = async () => {
     try {
@@ -30,22 +32,22 @@ export default function ProductosScreen() {
         text: 'Eliminar',
         style: 'destructive',
         onPress: async () => {
-          await deleteDoc(doc(db, 'productos', id));
-          cargarProductos();
+          try {
+            await deleteDoc(doc(db, 'productos', id));
+            await cargarProductos();
+          } catch (error) {
+            console.error('Error al eliminar producto:', error);
+            Alert.alert('Error', 'No se pudo eliminar el producto.');
+          }
         },
       },
     ]);
   };
 
-  const editarProducto = async (item) => {
-    const nuevoNombre = prompt('Editar nombre del producto:', item.nombre);
-    if (nuevoNombre) {
-      await updateDoc(doc(db, 'productos', item.id), { nombre: nuevoNombre });
-      cargarProductos();
-    }
+  const editarProducto = (item) => {
+    navigation.navigate('EditarProducto', { producto: item });
   };
 
-  // 🔁 Recarga cada vez que volvés a esta pantalla
   useFocusEffect(
     useCallback(() => {
       cargarProductos();
@@ -53,7 +55,7 @@ export default function ProductosScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>Lista de productos</Text>
       <TablaProductos
         productos={productos}
@@ -61,7 +63,7 @@ export default function ProductosScreen() {
         eliminarProducto={eliminarProducto}
       />
       <FloatingActions />
-    </View>
+    </SafeAreaView>
   );
 }
 

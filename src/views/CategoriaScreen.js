@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Alert } from 'react-native';
+import { StyleSheet, Text, Alert } from 'react-native';
 import { db } from '../database/firebaseConfig';
-import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import TablaCategorias from '../components/admin/TablaCategoria';
 import FloatingActions from '../components/shared/FloatingActions';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CategoriaScreen() {
   const [categorias, setCategorias] = useState([]);
+  const navigation = useNavigation();
 
   const cargarCategorias = async () => {
     const snapshot = await getDocs(collection(db, 'categoria'));
@@ -31,12 +34,8 @@ export default function CategoriaScreen() {
     ]);
   };
 
-  const editarCategoria = async (item) => {
-    const nuevoNombre = prompt('Editar categoría:', item.categoria);
-    if (nuevoNombre) {
-      await updateDoc(doc(db, 'categoria', item.id), { categoria: nuevoNombre });
-      cargarCategorias();
-    }
+  const editarCategoria = (item) => {
+    navigation.navigate('EditarCategoria', { categoria: item });
   };
 
   useEffect(() => {
@@ -44,7 +43,7 @@ export default function CategoriaScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>Lista de categorías</Text>
       <TablaCategorias
         categorias={categorias}
@@ -52,7 +51,7 @@ export default function CategoriaScreen() {
         editarCategoria={editarCategoria}
       />
       <FloatingActions />
-    </View>
+    </SafeAreaView>
   );
 }
 

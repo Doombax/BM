@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../database/firebaseConfig';
-import FormularioProductos from '../components/admin/FormularioProducto';
+import FormularioProducto from '../components/admin/FormularioProductos';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function EditarProductoScreen({ route, navigation }) {
@@ -16,7 +17,7 @@ export default function EditarProductoScreen({ route, navigation }) {
   const seleccionarImagen = async () => {
     const permiso = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permiso.granted) {
-      Alert.alert('Permiso denegado', 'Necesitamos acceso a tus fotos para seleccionar una imagen.');
+      Alert.alert('Permiso denegado', 'Necesitamos acceso a tus fotos.');
       return;
     }
 
@@ -33,12 +34,17 @@ export default function EditarProductoScreen({ route, navigation }) {
 
   const actualizarProducto = async () => {
     const {
-      codigo, nombre, categoria, descripcion,
+      codigo, nombre, categoria,
       precio, stock, foto, talla, marca, color
     } = datosProducto;
 
-    if (!codigo || !nombre || !categoria || !descripcion || !precio || !stock || !foto) {
-      Alert.alert('Campos incompletos', 'Por favor, completá todos los campos antes de actualizar.');
+    if (!codigo || !nombre || !categoria || !precio || !stock || !foto) {
+      Alert.alert('Campos incompletos', 'Por favor, completá todos los campos obligatorios.');
+      return;
+    }
+
+    if (!producto?.id) {
+      Alert.alert('Error', 'No se encontró el ID del producto.');
       return;
     }
 
@@ -47,7 +53,6 @@ export default function EditarProductoScreen({ route, navigation }) {
         codigo,
         nombre,
         categoria,
-        descripcion,
         precio: parseFloat(precio),
         stock: parseFloat(stock),
         foto,
@@ -65,15 +70,17 @@ export default function EditarProductoScreen({ route, navigation }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <FormularioProductos
-        nuevoProducto={datosProducto}
-        manejoCambio={manejoCambio}
-        guardarProducto={actualizarProducto}
-        seleccionarImagen={seleccionarImagen}
-        modEdicion={true}
-      />
-    </ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <FormularioProducto
+          nuevoProducto={datosProducto}
+          manejoCambio={manejoCambio}
+          guardarProducto={actualizarProducto}
+          seleccionarImagen={seleccionarImagen}
+          modEdicion={true}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

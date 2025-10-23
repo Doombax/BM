@@ -1,23 +1,23 @@
 import React from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Image } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Image } from 'react-native';
 
 export default function FormularioProducto({
   nuevoProducto,
   manejoCambio,
   guardarProducto,
   seleccionarImagen,
-  modEdicion = false,
+  modEdicion,
 }) {
   return (
     <View style={styles.formulario}>
       <TextInput
-        placeholder="Código del producto"
+        placeholder="Código"
         value={nuevoProducto.codigo}
         onChangeText={(text) => manejoCambio('codigo', text)}
         style={styles.input}
       />
       <TextInput
-        placeholder="Nombre del producto"
+        placeholder="Nombre"
         value={nuevoProducto.nombre}
         onChangeText={(text) => manejoCambio('nombre', text)}
         style={styles.input}
@@ -27,13 +27,6 @@ export default function FormularioProducto({
         value={nuevoProducto.categoria}
         onChangeText={(text) => manejoCambio('categoria', text)}
         style={styles.input}
-      />
-      <TextInput
-        placeholder="Descripción"
-        value={nuevoProducto.descripcion}
-        onChangeText={(text) => manejoCambio('descripcion', text)}
-        style={[styles.input, styles.descripcion]}
-        multiline
       />
       <TextInput
         placeholder="Precio"
@@ -67,17 +60,18 @@ export default function FormularioProducto({
         onChangeText={(text) => manejoCambio('color', text)}
         style={styles.input}
       />
-
-      <Button title="Seleccionar Imagen" onPress={seleccionarImagen} color="#4CAF50" />
       {nuevoProducto.foto ? (
         <Image source={{ uri: nuevoProducto.foto }} style={styles.preview} />
-      ) : (
-        <Text style={styles.sinImagen}>Sin imagen seleccionada</Text>
-      )}
+      ) : null}
       <Button
-        title={modEdicion ? 'Actualizar' : 'Guardar'}
+        title={modEdicion ? 'Actualizar producto' : 'Guardar producto'}
         onPress={guardarProducto}
         color="#007AFF"
+      />
+      <Button
+        title="Seleccionar imagen"
+        onPress={seleccionarImagen}
+        color="#888"
       />
     </View>
   );
@@ -94,20 +88,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#fff',
   },
-  descripcion: {
-    height: 80,
-    textAlignVertical: 'top',
-  },
   preview: {
     width: '100%',
     height: 150,
     borderRadius: 8,
-    marginVertical: 10,
-  },
-  sinImagen: {
-    textAlign: 'center',
-    fontStyle: 'italic',
-    color: '#888',
-    marginVertical: 10,
   },
 });
