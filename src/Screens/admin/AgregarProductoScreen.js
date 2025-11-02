@@ -4,9 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
-import { db } from '../database/firebaseConfig';
-import FormularioProducto from '../components/admin/FormularioProductos';
-import AlertaModal from '../components/shared/AlertaModal';
+import { db } from '../../database/firebaseConfig';
+import FormularioProducto from '../../components/admin/FormularioProductos';
+import AlertaModal from '../../components/shared/AlertaModal';
 
 export default function AgregarProductoScreen() {
   const navigation = useNavigation();

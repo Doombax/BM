@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Alert, Button } from "react-native";
-import { db } from "../database/firebaseConfig.js";
+import { db } from "../../database/firebaseConfig.js";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
-import FormularioCategorias from "../components/admin/FormularioCategoria.js";
-import TablaCategorias from "../components/admin/TablaCategoria.js";
+import FormularioCategorias from "../../components/admin/FormularioCategoria.js";
+import TablaCategorias from "../../components/admin/TablaCategoria.js";
 
 
-const Categoria = ({}) => {
+const Categoria = ({ }) => {
     const [nuevaCategoria, setNuevaCategoria] = useState({
-        categoria:"",
+        categoria: "",
     });
     const [categoria, setCategoria] = useState([]);
     const [modEdicion, setModEdicion] = useState(false);
@@ -23,11 +23,11 @@ const Categoria = ({}) => {
 
     const guardarCategoria = async () => {
         try {
-            if (nuevaCategoria.categoria ) {
+            if (nuevaCategoria.categoria) {
                 await addDoc(collection(db, "categoria"), {
-                    categoria:nuevaCategoria.categoria,
+                    categoria: nuevaCategoria.categoria,
                 });
-                setNuevaCategoria({categoria: "", }); // Limpiar formulario
+                setNuevaCategoria({ categoria: "", }); // Limpiar formulario
                 cargarDatos(); // Recargar lista
             } else {
                 Alert.alert("Por favor, complete todos los campos.");
@@ -41,9 +41,9 @@ const Categoria = ({}) => {
         try {
             if (nuevaCategoria.categoria) {
                 await updateDoc(doc(db, "categoria", categoriaId), {
-                    categoria:nuevaCategoria.categoria,
+                    categoria: nuevaCategoria.categoria,
                 });
-                setNuevaCategoria({categoria: "", });
+                setNuevaCategoria({ categoria: "", });
                 setModEdicion(false);
                 setCategoriaId(null);
                 cargarDatos(); // Recargar lista

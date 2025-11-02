@@ -1,7 +1,8 @@
 import React from 'react';
-import {View,TextInput,StyleSheet,Image,Text,TouchableOpacity,ScrollView,
+import {
+  View, TextInput, StyleSheet, Image, Text, TouchableOpacity, ScrollView,
 } from 'react-native';
-import ModalSelector from '../../views/ModalSelector';
+import ModalSelector from '../../Screens/admin/ModalSelector';
 
 export default function FormularioProducto({
   nuevoProducto = {},
@@ -38,8 +39,6 @@ export default function FormularioProducto({
             placeholderTextColor="#888"
           />
         </View>
-
-        {/* ModalSelector en lugar de DropDownPicker */}
         <View style={styles.grupo}>
           <ModalSelector
             label="Categoría"

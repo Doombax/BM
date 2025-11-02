@@ -1,13 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { db } from '../database/firebaseConfig';
+import { db } from '../../database/firebaseConfig';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import CatalogoProductos from '../components/admin/TablaProductos';
-import FloatingActions from '../components/shared/FloatingActions';
+import CatalogoProductos from '../../components/admin/TablaProductos';
+import FloatingActions from '../../components/shared/FloatingActions';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AlertaModalConfirmacion from '../components/shared/AlertaModalConfirmacion';
-import AlertaModal from '../components/shared/AlertaModal';
+import AlertaModalConfirmacion from '../../components/shared/AlertaModalConfirmacion';
+import AlertaModal from '../../components/shared/AlertaModal';
 
 export default function ProductosScreen() {
   const [productos, setProductos] = useState([]);

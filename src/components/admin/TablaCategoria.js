@@ -1,5 +1,5 @@
 import React from 'react';
-import {View,Text,FlatList,StyleSheet,TouchableOpacity,} from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function TablaCategorias({ categorias = [], editarCategoria, eliminarCategoria }) {

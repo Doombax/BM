@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { db } from "../database/firebaseConfig";
+import { db } from "../../database/firebaseConfig";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
-import FormularioProductos from "../components/admin/FormularioProductos";
-import CatalogoProductos from "../components/admin/CatalogoProductos";
+import FormularioProductos from "../../components/admin/FormularioProductos";
+import CatalogoProductos from "../../components/admin/TablaProductos";
 
 const Productos = () => {
   const [nuevoProducto, setNuevoProducto] = useState({

@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AlertaModal from '../components/shared/AlertaModal';
+import AlertaModal from '../../components/shared/AlertaModal';
 
 export default function Settings() {
   const navigation = useNavigation();
@@ -45,7 +45,7 @@ export default function Settings() {
         mensaje={alertaMensaje}
         onCerrar={() => {
           setAlertaVisible(false);
-          if (redirigir) navigation.replace('Login');
+          if (redirigir) navigation.replace('PublicoTabs');
         }}
       />
     </SafeAreaView>

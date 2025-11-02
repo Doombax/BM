@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Modal,View,Text,TouchableOpacity,FlatList,StyleSheet,} from 'react-native';
+import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, } from 'react-native';
 
 export default function ModalSelector({ label, value, options, onSelect }) {
   const [visible, setVisible] = useState(false);

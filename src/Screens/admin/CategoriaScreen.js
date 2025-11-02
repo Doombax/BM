@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { db } from '../database/firebaseConfig';
+import { db } from '../../database/firebaseConfig';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import TablaCategorias from '../components/admin/TablaCategoria';
-import FloatingActions from '../components/shared/FloatingActions';
+import TablaCategorias from '../../components/admin/TablaCategoria';
+import FloatingActions from '../../components/shared/FloatingActions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import AlertaModalConfirmacion from '../components/shared/AlertaModalConfirmacion';
+import AlertaModalConfirmacion from '../../components/shared/AlertaModalConfirmacion';
 
 export default function CategoriaScreen() {
   const [categorias, setCategorias] = useState([]);

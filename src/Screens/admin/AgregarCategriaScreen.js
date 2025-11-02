@@ -1,29 +1,20 @@
 import React, { useState } from 'react';
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-} from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { updateDoc, doc } from 'firebase/firestore';
-import { db } from '../database/firebaseConfig';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../../database/firebaseConfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AlertaModal from '../components/shared/AlertaModal';
+import AlertaModal from '../../components/shared/AlertaModal';
 
-export default function EditarCategoriaScreen() {
-  const route = useRoute();
+export default function AgregarCategoriaScreen() {
   const navigation = useNavigation();
-  const { categoria } = route.params;
-
-  const [nombre, setNombre] = useState(categoria.categoria || '');
+  const [nombre, setNombre] = useState('');
 
   const [alertaVisible, setAlertaVisible] = useState(false);
   const [alertaTitulo, setAlertaTitulo] = useState('');
   const [alertaMensaje, setAlertaMensaje] = useState('');
 
-  const actualizarCategoria = async () => {
+  const guardarCategoria = async () => {
     if (!nombre.trim()) {
       setAlertaTitulo('Campo vacío');
       setAlertaMensaje('Ingresá un nombre para la categoría.');
@@ -32,20 +23,20 @@ export default function EditarCategoriaScreen() {
     }
 
     try {
-      await updateDoc(doc(db, 'categoria', categoria.id), { categoria: nombre });
-      setAlertaTitulo('Categoría actualizada');
-      setAlertaMensaje('Los cambios se guardaron correctamente.');
+      await addDoc(collection(db, 'categoria'), { categoria: nombre });
+      setAlertaTitulo('Categoría guardada');
+      setAlertaMensaje('La categoría se agregó correctamente.');
       setAlertaVisible(true);
     } catch (error) {
       setAlertaTitulo('Error');
-      setAlertaMensaje('No se pudo actualizar la categoría.');
+      setAlertaMensaje('No se pudo guardar la categoría.');
       setAlertaVisible(true);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titulo}>Editar categoría</Text>
+      <Text style={styles.titulo}>Agregar categoría</Text>
       <TextInput
         placeholder="Nombre de la categoría"
         value={nombre}
@@ -53,8 +44,8 @@ export default function EditarCategoriaScreen() {
         style={styles.input}
         placeholderTextColor="#888"
       />
-      <TouchableOpacity style={styles.boton} onPress={actualizarCategoria}>
-        <Text style={styles.botonTexto}>Actualizar categoría</Text>
+      <TouchableOpacity style={styles.boton} onPress={guardarCategoria}>
+        <Text style={styles.botonTexto}>Guardar categoría</Text>
       </TouchableOpacity>
 
       <AlertaModal
@@ -63,7 +54,7 @@ export default function EditarCategoriaScreen() {
         mensaje={alertaMensaje}
         onCerrar={() => {
           setAlertaVisible(false);
-          if (alertaTitulo === 'Categoría actualizada') navigation.goBack();
+          if (alertaTitulo === 'Categoría guardada') navigation.goBack();
         }}
       />
     </SafeAreaView>

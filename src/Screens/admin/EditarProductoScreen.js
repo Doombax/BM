@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { doc, updateDoc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../database/firebaseConfig';
-import FormularioProducto from '../components/admin/FormularioProductos';
+import { db } from '../../database/firebaseConfig';
+import FormularioProducto from '../../components/admin/FormularioProductos';
 import * as ImagePicker from 'expo-image-picker';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import AlertaModal from '../components/shared/AlertaModal';
+import AlertaModal from '../../components/shared/AlertaModal';
 
 export default function EditarProductoScreen() {
   const route = useRoute();

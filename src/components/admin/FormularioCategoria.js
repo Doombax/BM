@@ -1,5 +1,5 @@
 import React from 'react';
-import {View,TextInput,StyleSheet,Text,TouchableOpacity,} from 'react-native';
+import { View, TextInput, StyleSheet, Text, TouchableOpacity, } from 'react-native';
 
 const FormularioCategorias = ({
     nuevaCategoria,

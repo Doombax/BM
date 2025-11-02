@@ -11,14 +11,12 @@ const BotonEliminarProducto = ({ id, eliminarProducto }) => {
     };
     return (
         <View>
-            {/* Botón pequeño */}
             <TouchableOpacity
                 style={styles.boton}
                 onPress={() => setVisible(true)}
             >
                 <Text style={styles.textoBoton}>🗑</Text>
             </TouchableOpacity>
-            {/* Modal de confirmación */}
             <Modal
                 visible={visible}
                 transparent

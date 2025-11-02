@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {TextInput,TouchableOpacity,StyleSheet,Text,View,Image,KeyboardAvoidingView,Platform,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../database/firebaseConfig';
-import AlertaModal from '../shared/AlertaModal';
+import { auth } from '../database/firebaseConfig';
+import AlertaModal from '../components/shared/AlertaModal';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }) {
       if (userEmail === 'admin@gmail.com') {
         navigation.replace('AdminTabs');
       } else if (userEmail === 'cliente@gmail.com') {
-        navigation.replace('ClienteScreen');
+        navigation.replace('ClienteTabs');
       } else {
         setAlertaTitulo('Acceso denegado');
         setAlertaMensaje('Usuario no autorizado.');
@@ -37,12 +37,12 @@ export default function LoginScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior="height"
         style={styles.inner}
       >
         <View style={styles.logoContainer}>
           <Image
-            source={require('../img/logo.png')}
+            source={require('../components/img/logo.png')}
             style={styles.logo}
           />
         </View>

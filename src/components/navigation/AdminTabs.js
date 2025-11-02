@@ -5,10 +5,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { BackHandler } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
-import ProductosScreen from '../views/ProductosScreen';
-import CategoriaScreen from '../views/CategoriaScreen';
-import Settings from '../views/Settings';
+import ProductosScreen from '../../Screens/admin/ProductosScreen';
+import CategoriaScreen from '../../Screens/admin/CategoriaScreen';
+import PedidosScreen from '../../Screens/admin/PedidosScreen';
+import Settings from '../../Screens/admin/Settings';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,6 +43,7 @@ export default function AdminTabs() {
             let iconName;
             if (route.name === 'Productos') iconName = 'shirt-outline';
             else if (route.name === 'Categoría') iconName = 'pricetags-outline';
+            else if (route.name === 'Pedidos') iconName = 'clipboard-outline';
             else if (route.name === 'Configuración') iconName = 'settings-outline';
             return <Ionicons name={iconName} size={size} color={color} />;
           },
@@ -50,6 +51,7 @@ export default function AdminTabs() {
       >
         <Tab.Screen name="Productos" component={ProductosScreen} />
         <Tab.Screen name="Categoría" component={CategoriaScreen} />
+        <Tab.Screen name="Pedidos" component={PedidosScreen} />
         <Tab.Screen name="Configuración" component={Settings} />
       </Tab.Navigator>
     </SafeAreaView>
