@@ -9,6 +9,7 @@ import ProductosScreen from '../../Screens/admin/ProductosScreen';
 import CategoriaScreen from '../../Screens/admin/CategoriaScreen';
 import PedidosScreen from '../../Screens/admin/PedidosScreen';
 import Settings from '../../Screens/admin/Settings';
+import GraficoVentasScreen from '../../Screens/admin/GraficoVentasScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,12 +45,14 @@ export default function AdminTabs() {
             if (route.name === 'Productos') iconName = 'shirt-outline';
             else if (route.name === 'Categoría') iconName = 'pricetags-outline';
             else if (route.name === 'Pedidos') iconName = 'clipboard-outline';
+            else if (route.name === 'Gráficos') iconName = 'stats-chart-outline';
             else if (route.name === 'Configuración') iconName = 'settings-outline';
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}
       >
         <Tab.Screen name="Productos" component={ProductosScreen} />
+        <Tab.Screen name="Gráficos" component={GraficoVentasScreen} />
         <Tab.Screen name="Categoría" component={CategoriaScreen} />
         <Tab.Screen name="Pedidos" component={PedidosScreen} />
         <Tab.Screen name="Configuración" component={Settings} />
