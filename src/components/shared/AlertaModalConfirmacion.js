@@ -13,7 +13,7 @@ export default function AlertaModalConfirmacion({ visible, titulo, mensaje, onCa
               <Text style={styles.botonTextoSecundario}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.botonConfirmar} onPress={onConfirmar}>
-              <Text style={styles.botonTexto}>Eliminar</Text>
+              <Text style={styles.botonTexto}>Aceptar</Text>
             </TouchableOpacity>
           </View>
         </View>

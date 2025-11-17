@@ -38,6 +38,12 @@ export default function FloatingActions() {
               <Text style={styles.texto}>Categoría</Text>
             </View>
           </TouchableOpacity>
+           <TouchableOpacity onPress={() => navigation.navigate('ActualizarStock')}>
+            <View style={styles.botonAccion}>
+              <Ionicons name="shirt-outline" size={22} color="#fff" />
+              <Text style={styles.texto}>Stock</Text>
+            </View>
+          </TouchableOpacity>
         </Animated.View>
       )}
       <TouchableOpacity style={styles.botonPrincipal} onPress={toggleExpand}>

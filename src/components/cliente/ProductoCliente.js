@@ -1,18 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '../../database/firebaseConfig';
 import AlertaModal from '../shared/AlertaModal';
+import { useCarrito } from './CarritoContext';
 
 export default function ProductoCliente({ producto, favoritos = [], setFavoritos }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
+  const { agregarProducto } = useCarrito();
 
   const esFavorito = useMemo(() => {
     return Array.isArray(favoritos)
@@ -23,42 +18,33 @@ export default function ProductoCliente({ producto, favoritos = [], setFavoritos
   const toggleFavorito = () => {
     if (esFavorito) {
       setFavoritos(favoritos.filter((f) => f.id !== producto.id));
+      setMensajeModal('Producto eliminado de favoritos');
     } else {
       setFavoritos([...favoritos, producto]);
+      setMensajeModal('Producto agregado a favoritos');
     }
+    setModalVisible(true);
   };
 
-  const realizarCompra = async () => {
-    try {
-      const nuevaCompra = {
-        productoId: producto.id,
-        nombre: producto.nombre,
-        precio: producto.precio,
-        foto: producto.foto || '',
-        cliente: 'cliente@gmail.com',
-        fecha: new Date(),
-      };
-
-      await addDoc(collection(db, 'compras'), nuevaCompra);
-      setModalVisible(true);
-    } catch (error) {
-      console.error('Error al guardar la compra:', error);
-    }
+  const irAlCarrito = () => {
+    agregarProducto(producto);
+    setMensajeModal('Producto agregado al carrito 🛒');
+    setModalVisible(true);
   };
 
   return (
     <View style={styles.card}>
-      <Image
-        source={{
-          uri: producto.foto || 'https://via.placeholder.com/60x60?text=Sin+imagen',
-        }}
-        style={styles.imagen}
-        resizeMode="cover"
-      />
+      <Image source={{ uri: producto.foto }} style={styles.imagen} resizeMode="cover" />
+
       <View style={styles.info}>
         <Text style={styles.nombre}>{producto.nombre}</Text>
         <Text style={styles.precio}>${producto.precio}</Text>
+        <Text style={styles.detalle}>Marca: {producto.marca}</Text>
+        <Text style={styles.detalle}>Talla: {producto.talla}</Text>
+        <Text style={styles.detalle}>Categoría: {producto.categoria}</Text>
+        <Text style={styles.detalle}>Stock: {producto.stock}</Text>
       </View>
+
       <View style={styles.iconos}>
         <TouchableOpacity onPress={toggleFavorito}>
           <MaterialCommunityIcons
@@ -67,15 +53,15 @@ export default function ProductoCliente({ producto, favoritos = [], setFavoritos
             color={esFavorito ? '#D96C9F' : '#ccc'}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={realizarCompra}>
+        <TouchableOpacity onPress={irAlCarrito}>
           <MaterialCommunityIcons name="cart-outline" size={24} color="#ccc" />
         </TouchableOpacity>
       </View>
 
       <AlertaModal
         visible={modalVisible}
-        titulo="Compra realizada"
-        mensaje="Tu pedido ha sido registrado correctamente"
+        titulo="Acción realizada"
+        mensaje={mensajeModal}
         onCerrar={() => setModalVisible(false)}
       />
     </View>
@@ -85,35 +71,45 @@ export default function ProductoCliente({ producto, favoritos = [], setFavoritos
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#1E1E1E',
-    marginHorizontal: 10,
-    marginVertical: 6,
+    margin: 8,
     borderRadius: 12,
     padding: 12,
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    width: '100%',
+    flex: 1,
   },
   imagen: {
-    width: 60,
-    height: 60,
+    width: '100%',
+    height: 120,
     borderRadius: 8,
+    marginBottom: 10,
     backgroundColor: '#333',
   },
   info: {
-    flex: 1,
+    width: '100%',
+    alignItems: 'flex-start',
+    marginBottom: 10,
   },
   nombre: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+    marginBottom: 4,
   },
   precio: {
     color: '#D96C9F',
     fontSize: 14,
-    marginTop: 4,
+    marginBottom: 4,
+  },
+  detalle: {
+    color: '#aaa',
+    fontSize: 12,
+    marginBottom: 2,
   },
   iconos: {
     flexDirection: 'row',
-    gap: 12,
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 8,
   },
 });
