@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View, TextInput, StyleSheet, Image, Text, TouchableOpacity, ScrollView,
 } from 'react-native';
+import normalizeImageUri from '../../utils/imageHelpers';
 import ModalSelector from '../../Screens/admin/ModalSelector';
 
 export default function FormularioProducto({
@@ -33,7 +34,10 @@ export default function FormularioProducto({
           <Text style={styles.etiqueta}>Nombre</Text>
           <TextInput
             value={nuevoProducto.nombre}
-            onChangeText={(text) => manejoCambio('nombre', text)}
+            onChangeText={(text) => {
+              const sanitized = text.replace(/[0-9]/g, '');
+              manejoCambio('nombre', sanitized);
+            }}
             style={styles.input}
             placeholder="Nombre del producto"
             placeholderTextColor="#888"
@@ -59,7 +63,14 @@ export default function FormularioProducto({
             </Text>
             <TextInput
               value={nuevoProducto[campo]}
-              onChangeText={(text) => manejoCambio(campo, text)}
+              onChangeText={(text) => {
+                if (['talla', 'marca', 'color'].includes(campo)) {
+                  const sanitized = text.replace(/[0-9]/g, '');
+                  manejoCambio(campo, sanitized);
+                } else {
+                  manejoCambio(campo, text);
+                }
+              }}
               style={styles.input}
               placeholder={campo}
               placeholderTextColor="#888"
@@ -71,7 +82,7 @@ export default function FormularioProducto({
         ))}
 
         {nuevoProducto.foto ? (
-          <Image source={{ uri: nuevoProducto.foto }} style={styles.preview} />
+          <Image source={{ uri: normalizeImageUri(nuevoProducto.foto) }} style={styles.preview} />
         ) : null}
 
         {/* Botones al final del scroll */}

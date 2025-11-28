@@ -6,6 +6,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import normalizeImageUri from '../../utils/imageHelpers';
 
 export default function PerfilScreen() {
     const [nombres, setNombres] = useState("");
@@ -98,7 +99,7 @@ export default function PerfilScreen() {
 
             <TouchableOpacity onPress={seleccionarImagen}>
                 {fotoPerfil ? (
-                    <Image source={{ uri: fotoPerfil }} style={styles.foto} />
+                    <Image source={{ uri: normalizeImageUri(fotoPerfil) }} style={styles.foto} />
                 ) : (
                     <View style={styles.fotoPlaceholder}>
                         <Text style={{ color: "#aaa" }}>Seleccionar foto</Text>

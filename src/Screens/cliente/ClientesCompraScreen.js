@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { auth, db } from "../../database/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
+import normalizeImageUri from '../../utils/imageHelpers';
 
 export default function ComprasClienteScreen() {
     const [compras, setCompras] = useState([]);
@@ -35,7 +36,7 @@ export default function ComprasClienteScreen() {
 
             {item.productos.map((p, i) => (
                 <View key={i} style={styles.productoBox}>
-                    <Image source={{ uri: p.foto }} style={styles.imagen} resizeMode="cover" />
+                    <Image source={{ uri: normalizeImageUri(p.foto) }} style={styles.imagen} resizeMode="cover" />
                     <View style={styles.info}>
                         <Text style={styles.nombre}>{p.nombre}</Text>
                         <Text style={styles.detalle}>Cantidad: {p.cantidad}</Text>

@@ -43,7 +43,13 @@ export default function EditarCategoriaScreen() {
       <TextInput
         placeholder="Nombre de la categoría"
         value={nombre}
-        onChangeText={setNombre}
+        onChangeText={(text) => {
+          // Permitir solo letras (incluye acentos), espacios y guiones
+          const sanitized = text.replace(/[^^\p{L}\s-]/gu, '');
+          // Fallback (si el motor no soporta \p{L}):
+          // const sanitized = text.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñüÜ\s-]/g, '');
+          setNombre(sanitized);
+        }}
         style={styles.input}
         placeholderTextColor="#888"
       />

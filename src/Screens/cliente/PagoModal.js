@@ -16,7 +16,8 @@ export default function PagoModal({ visible, onCerrar, onConfirmar }) {
     const [confirmacionVisible, setConfirmacionVisible] = useState(false);
 
     const validarYConfirmar = () => {
-        if (numero.length !== 16 || cvv.length !== 3 || !vencimiento.trim() || !titular.trim()) {
+        // vencimiento stored as 4 digits MMYY
+        if (numero.length !== 16 || cvv.length !== 3 || vencimiento.length !== 4 || !titular.trim()) {
             setAlertaTitulo("Datos inválidos");
             setAlertaMensaje("Por favor completa los datos correctamente.");
             setAlertaVisible(true);
@@ -66,14 +67,34 @@ export default function PagoModal({ visible, onCerrar, onConfirmar }) {
                     <TextInput
                         style={styles.input}
                         placeholder="Fecha de vencimiento (MM/AA)"
-                        value={vencimiento}
-                        onChangeText={setVencimiento}
+                        keyboardType="numeric"
+                        value={(function format(v){
+                            if(!v) return '';
+                            if(v.length <= 2) return v;
+                            return v.substring(0,2) + '/' + v.substring(2,4);
+                        })(vencimiento)}
+                        onChangeText={(text) => {
+                            // keep only digits
+                            const digits = text.replace(/[^0-9]/g, '');
+                            // limit to 4 digits (MMYY)
+                            setVencimiento(digits.substring(0,4));
+                        }}
+                        maxLength={5}
                     />
                     <TextInput
                         style={styles.input}
                         placeholder="Nombre del titular"
                         value={titular}
-                        onChangeText={setTitular}
+                        onChangeText={(text) => {
+                            // Permitir solo letras y espacios (soporta acentos mediante fallback)
+                            try {
+                                const sanitized = text.replace(/[^^\p{L}\s]/gu, '');
+                                setTitular(sanitized);
+                            } catch (e) {
+                                const sanitized = text.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñüÜ\s]/g, '');
+                                setTitular(sanitized);
+                            }
+                        }}
                     />
 
                     <TouchableOpacity style={styles.botonConfirmar} onPress={validarYConfirmar}>

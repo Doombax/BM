@@ -5,6 +5,7 @@ import { doc, updateDoc, getDocs, query, collection, where } from 'firebase/fire
 import { db } from '../../database/firebaseConfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AlertaModal from '../../components/shared/AlertaModal';
+import normalizeImageUri from '../../utils/imageHelpers';
 
 export default function ActualizarStockScreen() {
     const [codigo, setCodigo] = useState('');
@@ -30,7 +31,7 @@ export default function ActualizarStockScreen() {
 
             const inicial = {};
             lista.forEach((p) => {
-                inicial[p.id] = p.stock || 0;
+                inicial[p.id] = String(p.stock ?? 0);
             });
             setStocks(inicial);
         } catch (error) {
@@ -55,7 +56,7 @@ export default function ActualizarStockScreen() {
 
                 const inicial = {};
                 lista.forEach((p) => {
-                    inicial[p.id] = p.stock || 0;
+                    inicial[p.id] = String(p.stock ?? 0);
                 });
                 setStocks(inicial);
             } else {
@@ -68,8 +69,15 @@ export default function ActualizarStockScreen() {
 
     const actualizarStock = async (productoId, nuevoStock, nombre) => {
         try {
-            await updateDoc(doc(db, 'productos', productoId), { stock: nuevoStock });
-            setMensajeModal(`Stock de ${nombre} actualizado a ${nuevoStock}`);
+            const parsed = parseInt(nuevoStock, 10);
+            if (isNaN(parsed)) {
+                setMensajeModal('Ingrese un número válido para el stock');
+                setModalVisible(true);
+                return;
+            }
+
+            await updateDoc(doc(db, 'productos', productoId), { stock: parsed });
+            setMensajeModal(`Stock de ${nombre} actualizado a ${parsed}`);
             setModalVisible(true); // abrir modal boutique
             cargarProductos();
         } catch (error) {
@@ -78,17 +86,22 @@ export default function ActualizarStockScreen() {
     };
 
     const renderItem = ({ item }) => {
-        const stock = stocks[item.id] ?? item.stock ?? 0;
+
+        const stock = stocks[item.id] ?? String(item.stock ?? 0);
 
         return (
             <View style={styles.card}>
-                <Image source={{ uri: item.foto }} style={styles.imagen} />
+                <Image source={{ uri: normalizeImageUri(item.foto) }} style={styles.imagen} />
                 <View style={styles.info}>
                     <Text style={styles.nombre}>{item.nombre}</Text>
                     <Text style={styles.detalle}>Marca: {item.marca}</Text>
                     <Text style={styles.detalle}>Talla: {item.talla}</Text>
                     <View style={styles.stockRow}>
-                        <TouchableOpacity onPress={() => setStocks({ ...stocks, [item.id]: stock - 1 })}>
+                        <TouchableOpacity onPress={() => {
+                            const current = Number(stock) || 0;
+                            const next = Math.max(0, current - 1);
+                            setStocks({ ...stocks, [item.id]: String(next) });
+                        }}>
                             <MaterialCommunityIcons name="minus-circle" size={28} color="#D96C9F" />
                         </TouchableOpacity>
 
@@ -96,10 +109,17 @@ export default function ActualizarStockScreen() {
                             style={styles.stockInput}
                             keyboardType="numeric"
                             value={String(stock)}
-                            onChangeText={(text) => setStocks({ ...stocks, [item.id]: Number(text) })}
+                            onChangeText={(text) => {
+                                const sanitized = text.replace(/[^0-9]/g, '');
+                                setStocks({ ...stocks, [item.id]: sanitized });
+                            }}
                         />
 
-                        <TouchableOpacity onPress={() => setStocks({ ...stocks, [item.id]: stock + 1 })}>
+                        <TouchableOpacity onPress={() => {
+                            const current = Number(stock) || 0;
+                            const next = current + 1;
+                            setStocks({ ...stocks, [item.id]: String(next) });
+                        }}>
                             <MaterialCommunityIcons name="plus-circle" size={28} color="#D96C9F" />
                         </TouchableOpacity>
                     </View>

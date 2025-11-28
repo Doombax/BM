@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AlertaModal from '../shared/AlertaModal';
 import { useCarrito } from './CarritoContext';
+import normalizeImageUri from '../../utils/imageHelpers';
 
 export default function ProductoCliente({ producto, favoritos = [], setFavoritos }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,7 +35,7 @@ export default function ProductoCliente({ producto, favoritos = [], setFavoritos
 
   return (
     <View style={styles.card}>
-      <Image source={{ uri: producto.foto }} style={styles.imagen} resizeMode="cover" />
+      <Image source={{ uri: normalizeImageUri(producto.foto) }} style={styles.imagen} resizeMode="cover" />
 
       <View style={styles.info}>
         <Text style={styles.nombre}>{producto.nombre}</Text>

@@ -40,7 +40,15 @@ export default function AgregarCategoriaScreen() {
       <TextInput
         placeholder="Nombre de la categoría"
         value={nombre}
-        onChangeText={setNombre}
+        onChangeText={(text) => {
+          // Permitir solo letras (de cualquier idioma), espacios y guiones
+          // Uso de "+u" para soportar propiedades Unicode (letras con acentos, ñ, etc.)
+          const sanitized = text.replace(/[^^\p{L}\s-]/gu, '');
+          // Si el motor JS no soporta \p{L}, caerá en el mismo comportamiento anterior; en ese caso
+          // eliminamos dígitos y caracteres no alfabéticos con una alternativa simple:
+          // const sanitized = text.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñüÜ\s-]/g, '');
+          setNombre(sanitized);
+        }}
         style={styles.input}
         placeholderTextColor="#888"
       />

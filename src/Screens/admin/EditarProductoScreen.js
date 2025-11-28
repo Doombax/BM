@@ -69,9 +69,34 @@ export default function EditarProductoScreen() {
       precio, stock, foto, talla, marca, color
     } = datosProducto;
 
-    if (!codigo || !nombre || !categoria || !precio || !stock || !foto) {
+    // Sanitizar campos de texto: eliminar dígitos en nombre, marca, color, talla
+    const sanitizedNombre = (nombre || '').replace(/[0-9]/g, '').trim();
+    const sanitizedMarca = (marca || '').replace(/[0-9]/g, '').trim();
+    const sanitizedColor = (color || '').replace(/[0-9]/g, '').trim();
+    const sanitizedTalla = (talla || '').replace(/[0-9]/g, '').trim();
+
+    // Sanitizar categoría: permitir sólo letras, espacios y guiones (uso Unicode si está disponible)
+    let sanitizedCategoria = (categoria || '').trim();
+    try {
+      sanitizedCategoria = sanitizedCategoria.replace(/[^^\p{L}\s-]/gu, '');
+    } catch (e) {
+      // Fallback si el motor JS no soporta \p{L}
+      sanitizedCategoria = sanitizedCategoria.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñüÜ\s-]/g, '');
+    }
+
+    const precioNum = parseFloat(precio);
+    const stockNum = parseFloat(stock);
+
+    if (!codigo || !sanitizedNombre || !sanitizedCategoria || !precio || !stock || !foto) {
       setAlertaTitulo('Campos incompletos');
       setAlertaMensaje('Por favor, completá todos los campos obligatorios.');
+      setAlertaVisible(true);
+      return;
+    }
+
+    if (isNaN(precioNum) || isNaN(stockNum)) {
+      setAlertaTitulo('Campos inválidos');
+      setAlertaMensaje('Precio y stock deben ser números válidos.');
       setAlertaVisible(true);
       return;
     }
@@ -86,14 +111,14 @@ export default function EditarProductoScreen() {
     try {
       await updateDoc(doc(db, 'productos', producto.id), {
         codigo,
-        nombre,
-        categoria,
-        precio: parseFloat(precio),
-        stock: parseFloat(stock),
+        nombre: sanitizedNombre,
+        categoria: sanitizedCategoria,
+        precio: precioNum,
+        stock: stockNum,
         foto,
-        talla,
-        marca,
-        color,
+        talla: sanitizedTalla,
+        marca: sanitizedMarca,
+        color: sanitizedColor,
       });
 
       setAlertaTitulo('Producto actualizado');

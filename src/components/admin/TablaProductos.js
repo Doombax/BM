@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import normalizeImageUri from '../../utils/imageHelpers';
 
 export default function CatalogoProductos({ productos = [], editarProducto, eliminarProducto }) {
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Image source={{ uri: item.foto }} style={styles.imagen} />
+      <Image source={{ uri: normalizeImageUri(item.foto) }} style={styles.imagen} />
       <Text style={styles.nombre}>{item.nombre}</Text>
       <Text style={styles.precio}>${item.precio}</Text>
       <Text style={styles.detalle}>Categoría: {item.categoria}</Text>

@@ -4,7 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { auth, db } from "../../database/firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from 'expo-image-picker';
+import normalizeImageUri from '../../utils/imageHelpers';
 import { signOut } from "firebase/auth";
 import AlertaModal from "../../components/shared/AlertaModal";
 
@@ -111,7 +112,7 @@ export default function PerfilScreen() {
 
       <TouchableOpacity onPress={seleccionarImagen}>
         {fotoPerfil ? (
-          <Image source={{ uri: fotoPerfil }} style={styles.foto} />
+            <Image source={{ uri: normalizeImageUri(fotoPerfil) }} style={styles.foto} />
         ) : (
           <View style={styles.fotoPlaceholder}>
             <Text style={{ color: "#aaa" }}>Seleccionar foto</Text>

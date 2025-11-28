@@ -7,6 +7,7 @@ import { doc, setDoc, collection, addDoc, updateDoc } from "firebase/firestore";
 import PagoModal from "./PagoModal";
 import AlertaModal from "../../components/shared/AlertaModal";
 import AlertaModalConfirmacion from "../../components/shared/AlertaModalConfirmacion";
+import normalizeImageUri from '../../utils/imageHelpers';
 
 export default function CarritoScreen({ navigation }) {
   const { carrito, actualizarCantidad, limpiarCarrito } = useCarrito();
@@ -85,7 +86,7 @@ export default function CarritoScreen({ navigation }) {
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Image source={{ uri: item.foto }} style={styles.imagen} resizeMode="cover" />
+      <Image source={{ uri: normalizeImageUri(item.foto) }} style={styles.imagen} resizeMode="cover" />
 
       <View style={styles.info}>
         <Text style={styles.nombre}>{item.nombre}</Text>
